@@ -1,6 +1,7 @@
 # ─── Build Stage ──────────────────────────────────────────────────────────────
 FROM node:22-alpine AS builder
 RUN npm install -g pnpm
+ENV PNPM_MINIMUM_RELEASE_AGE=0
 
 WORKDIR /app
 
