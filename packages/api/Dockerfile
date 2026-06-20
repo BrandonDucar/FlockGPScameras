@@ -44,6 +44,7 @@ ENV PNPM_MINIMUM_RELEASE_AGE=0
 ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
 ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 RUN pnpm install --prod --frozen-lockfile
+RUN pnpm --filter @flockgps/db generate
 
 EXPOSE 3001
 ENV NODE_ENV=production
