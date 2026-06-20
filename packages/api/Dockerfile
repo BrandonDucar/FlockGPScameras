@@ -12,7 +12,7 @@ COPY packages/db/package.json ./packages/db/
 COPY packages/api/package.json ./packages/api/
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --minimum-release-age=0
 
 # Copy source code
 COPY packages/shared ./packages/shared
