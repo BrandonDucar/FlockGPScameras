@@ -2,6 +2,8 @@
 FROM node:22-alpine AS builder
 RUN npm install -g pnpm
 ENV PNPM_MINIMUM_RELEASE_AGE=0
+ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 
 WORKDIR /app
 
@@ -35,7 +37,9 @@ COPY --from=builder /app/packages/shared/package.json /app/packages/shared/dist 
 COPY --from=builder /app/packages/db/package.json /app/packages/db/prisma ./packages/db/prisma/
 COPY --from=builder /app/packages/api/package.json /app/packages/api/dist ./packages/api/dist/
 
-# Production install
+ENV PNPM_MINIMUM_RELEASE_AGE=0
+ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
+ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 RUN pnpm install --prod --frozen-lockfile
 
 EXPOSE 3001
