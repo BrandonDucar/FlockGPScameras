@@ -33,9 +33,12 @@ RUN npm install -g pnpm
 WORKDIR /app
 
 COPY --from=builder /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
-COPY --from=builder /app/packages/shared/package.json /app/packages/shared/dist ./packages/shared/dist/
-COPY --from=builder /app/packages/db/package.json /app/packages/db/prisma ./packages/db/prisma/
-COPY --from=builder /app/packages/api/package.json /app/packages/api/dist ./packages/api/dist/
+COPY --from=builder /app/packages/shared/package.json ./packages/shared/package.json
+COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
+COPY --from=builder /app/packages/db/package.json ./packages/db/package.json
+COPY --from=builder /app/packages/db/prisma ./packages/db/prisma
+COPY --from=builder /app/packages/api/package.json ./packages/api/package.json
+COPY --from=builder /app/packages/api/dist ./packages/api/dist
 
 ENV PNPM_MINIMUM_RELEASE_AGE=0
 ENV PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
