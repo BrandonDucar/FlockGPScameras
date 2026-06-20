@@ -54,14 +54,13 @@ services:
       flock-redis:
         condition: service_healthy
 
-  # ─── Next.js Web App ────────────────────────────────────────────────────────
+  # ─── Svelte Web App ─────────────────────────────────────────────────────────
   flock-web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: "http://localhost:3001/api/v1"
-        NEXT_PUBLIC_MAPBOX_TOKEN: "pk.eyJ1IjoicGlib29zdCIsImEiOiJjbHdkZHpxZjYwOHRwMnFudjM4Z3dpeWh1In0.xxx"
+        VITE_MAPBOX_TOKEN: "${VITE_MAPBOX_TOKEN}"
     container_name: flock-web
     ports:
       - "3000:3000"
