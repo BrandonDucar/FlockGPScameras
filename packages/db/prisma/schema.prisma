@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [postgis(version: "3.3")]
+}
+
+enum LocationStatus {
+  unverified
+  verified
+  disputed
+  removed
+}
+
+enum CameraType {
+  alpr
+  traffic
+  fixed
+  mobile
+  unknown
+}
+
+enum SourceType {
+  user_submitted
+  csv_import
+  manual_admin
+}
+
+model CameraLocation {
+  id              String         @id @default(cuid())
+  /// Stored as PostGIS geometry(Point, 4326) - managed via raw SQL
+  lat             Float
+  lng             Float
+  address         String?
+  city            String?
+  state           String?        @db.VarChar(2)
+  zipCode         String?        @db.VarChar(10)
+  country         String         @default("US") @db.VarChar(2)
+  cameraType      CameraType     @default(unknown)
+  status          LocationStatus @default(unverified)
+  confidenceScore Int            @default(50)   // 0–100
+  description     String?        @db.Text
+  imageUrl        String?
+  sourceType      SourceType     @default(user_submitted)
+  submittedBy     String?        // anonymous session hash
+  upvotes         Int            @default(0)
+  downvotes       Int            @default(0)
+  reportCount     Int            @default(0)
+  isActive        Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  votes   LocationVote[]
+  reports LocationReport[]
+
+  @@index([lat, lng])
+  @@index([state])
+  @@index([zipCode])
+  @@index([status])
+  @@index([cameraType])
+  @@index([confidenceScore])
+  @@index([createdAt])
+  @@index([isActive, status])
+  @@map("camera_locations")
+}
+
+model LocationVote {
+  id         String         @id @default(cuid())
+  locationId String
+  voterHash  String         // anonymous session hash
+  vote       String         // 'up' | 'down'
+  comment    String?        @db.Text
+  createdAt  DateTime       @default(now())
+
+  location   CameraLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([locationId, voterHash])
+  @@index([locationId])
+  @@map("location_votes")
+}
+
+model LocationReport {
+  id         String         @id @default(cuid())
+  locationId String
+  reporterHash String
+  reason     String         // 'inaccurate' | 'removed' | 'duplicate' | 'inappropriate'
+  details    String?        @db.Text
+  resolved   Boolean        @default(false)
+  createdAt  DateTime       @default(now())
+
+  location   CameraLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@index([locationId])
+  @@index([resolved])
+  @@map("location_reports")
+}
+
+model ImportBatch {
+  id          String   @id @default(cuid())
+  filename    String
+  totalRows   Int
+  imported    Int      @default(0)
+  skipped     Int      @default(0)
+  errors      Int      @default(0)
+  status      String   @default("pending") // pending | processing | done | failed
+  createdAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@map("import_batches")
+}

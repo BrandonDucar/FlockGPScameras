@@ -1,0 +1,211 @@
+:root {
+  --bg-dark: hsl(222, 25%, 6%);
+  --bg-card: hsla(222, 25%, 10%, 0.85);
+  --bg-input: hsl(222, 25%, 12%);
+  --accent: hsl(250, 85%, 66%);
+  --accent-glow: hsla(250, 85%, 66%, 0.4);
+  --accent-gradient: linear-gradient(135deg, hsl(250, 85%, 66%) 0%, hsl(280, 85%, 66%) 100%);
+  --text-primary: hsl(210, 20%, 98%);
+  --text-secondary: hsl(218, 16%, 80%);
+  --text-muted: hsl(218, 12%, 55%);
+  --success: hsl(150, 84%, 44%);
+  --warning: hsl(38, 92%, 50%);
+  --error: hsl(355, 84%, 55%);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.2);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, #svelte {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Status Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-verified {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-unverified {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badge-disputed {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Custom map markers */
+.custom-marker {
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: transform var(--transition-fast) !important;
+}
+.custom-marker:hover {
+  transform: translate(-50%, -50%) scale(1.15) !important;
+}
+
+/* Mapbox overrides */
+.mapboxgl-popup {
+  max-width: 320px !important;
+}
+.mapboxgl-popup-content {
+  background: var(--bg-card) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg) !important;
+  color: var(--text-primary) !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+}
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  border-bottom-color: var(--bg-card) !important;
+}
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: var(--bg-card) !important;
+}
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: var(--bg-card) !important;
+}
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: var(--bg-card) !important;
+}
+.mapboxgl-ctrl-group {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+.mapboxgl-ctrl-group button {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.mapboxgl-ctrl-group button span {
+  filter: invert(1) !important;
+}
+.mapboxgl-popup-close-button {
+  color: var(--text-muted) !important;
+  padding: 6px 10px !important;
+  font-size: 1.1rem !important;
+}
+.mapboxgl-popup-close-button:hover {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+/* Layout container styling */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-viewport {
+  flex: 1;
+  height: 100%;
+  position: relative;
+}
+
+.sidebar {
+  width: 420px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  border-right: 1px solid var(--border);
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column-reverse;
+  }
+  .sidebar {
+    width: 100%;
+    height: 50%;
+    border-right: none;
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* Floating Legal badge */
+.legal-floating-badge {
+  position: absolute;
+  bottom: 24px;
+  right: 12px;
+  padding: 8px 14px;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  z-index: 5;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-lg);
+}
+.legal-floating-badge:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}

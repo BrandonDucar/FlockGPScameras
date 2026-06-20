@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # ─── PostgreSQL + PostGIS ──────────────────────────────────────────────────
+  flock-db:
+    image: postgis/postgis:15-3.3
+    container_name: flock-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: flockgps
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d flockgps"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis Cache ────────────────────────────────────────────────────────────
+  flock-redis:
+    image: redis:7-alpine
+    container_name: flock-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Express API ────────────────────────────────────────────────────────────
+  flock-api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    container_name: flock-api
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: "postgresql://postgres:password@flock-db:5432/flockgps?schema=public"
+      DIRECT_URL: "postgresql://postgres:password@flock-db:5432/flockgps?schema=public"
+      REDIS_URL: "redis://flock-redis:6379"
+      API_PORT: 3001
+      API_SECRET: "change-me-in-production-docker-run"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:3001"
+    depends_on:
+      flock-db:
+        condition: service_healthy
+      flock-redis:
+        condition: service_healthy
+
+  # ─── Next.js Web App ────────────────────────────────────────────────────────
+  flock-web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: "http://localhost:3001/api/v1"
+        NEXT_PUBLIC_MAPBOX_TOKEN: "pk.eyJ1IjoicGlib29zdCIsImEiOiJjbHdkZHpxZjYwOHRwMnFudjM4Z3dpeWh1In0.xxx"
+    container_name: flock-web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - flock-api
+
+volumes:
+  pgdata:
+  redisdata:
