@@ -197,13 +197,13 @@ importers:
       '@prisma/client':
         specifier: ^5.14.0
         version: 5.22.0(prisma@5.22.0)
+      prisma:
+        specifier: ^5.14.0
+        version: 5.22.0
     devDependencies:
       '@types/node':
         specifier: ^20.12.0
         version: 20.19.43
-      prisma:
-        specifier: ^5.14.0
-        version: 5.22.0
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.19.43)(typescript@5.9.3)
