@@ -23,7 +23,7 @@ COPY packages/api ./packages/api
 
 # Build shared and Prisma client
 RUN pnpm --filter @flockgps/shared build
-RUN pnpm --filter @flockgps/db prisma generate
+RUN pnpm --filter @flockgps/db generate
 RUN pnpm --filter @flockgps/api build
 
 # ─── Runner Stage ─────────────────────────────────────────────────────────────
