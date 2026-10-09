@@ -43,5 +43,10 @@ Authentication, retention, access control, and device behavior need independent
 verification before operational deployment.
 
 No hosted application is asserted here; the homepage is a project overview.
-No redistribution license is declared here. Request maintainer clarification
-before reuse that requires a license.
+
+## License
+
+Original DreamNet project contributions are licensed under [Apache-2.0](LICENSE).
+The six workspace package manifests declare that license. [LICENSE_SCOPE.md](LICENSE_SCOPE.md)
+and [NOTICE](NOTICE) preserve scaffold attribution and distinguish dependency, map/data,
+and media rights. Third-party packages and services retain their applicable terms.
