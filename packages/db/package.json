@@ -1,5 +1,6 @@
 {
   "name": "@flockgps/db",
+  "license": "Apache-2.0",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

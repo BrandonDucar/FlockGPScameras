@@ -1,0 +1,9 @@
+FlockGPScameras
+Copyright 2026 Brandon Ducar
+
+The web workspace was scaffolded using Svelte CLI (sv); the original scaffold
+README and recreation command remain at apps/web/README.md.
+Upstream project: https://github.com/sveltejs/cli
+
+Third-party dependencies and services retain their own licenses, notices, and
+terms. This attribution notice does not relicense those works.
